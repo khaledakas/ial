@@ -220,7 +220,7 @@ function buildFilters() {
     m.set(q.unit, (m.get(q.unit) || 0) + (calcOk(q) ? 1 : 0));
   }
   $("groups").innerHTML = "";
-  for (const subject of ["Maths", "Physics", "Chemistry", "Biology", "Economics", "Business", "Psychology"]) {
+  for (const subject of ["Maths", "Physics", "Chemistry", "Biology", "Economics"]) {
     if (!bySubject[subject]) continue;
     const g = document.createElement("div");
     g.className = "group";
