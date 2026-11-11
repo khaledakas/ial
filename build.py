@@ -83,9 +83,9 @@ def main():
     for f in ("index.html", "predicted.html"):
         shutil.copyfile(f"{PUBLIC}/{f}", f)
     s = open("index.html").read()
-    a = '["Maths", "Physics", "Chemistry", "Biology", "Economics", "Psychology"]'
+    a = '["Maths", "Physics", "Chemistry", "Biology", "Economics"]'
     assert a in s
-    open("index.html", "w").write(s.replace(a, '["Maths", "Physics", "Chemistry", "Biology", "Economics", "Business", "Psychology"]'))
+    open("index.html", "w").write(s.replace(a, '["Maths", "Physics", "Chemistry", "Biology", "Economics"]'))
 
 
 MARKETING = "marketing:5, market research:5, segmentation:5, market share:5, marketing mix:5, product life cycle:5, boston matrix:5, promotion:4, branding:4, price elasticity:4, demand:2, supply:2"
