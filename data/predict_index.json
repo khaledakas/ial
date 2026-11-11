@@ -1,0 +1,242 @@
+[
+ {
+  "key": "maths_m1",
+  "subject": "Maths",
+  "unit": "M1",
+  "papers": 31,
+  "from": "January 2014",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_m2",
+  "subject": "Maths",
+  "unit": "M2",
+  "papers": 32,
+  "from": "January 2014",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_p1",
+  "subject": "Maths",
+  "unit": "P1",
+  "papers": 21,
+  "from": "January 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_p2",
+  "subject": "Maths",
+  "unit": "P2",
+  "papers": 19,
+  "from": "October 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_p3",
+  "subject": "Maths",
+  "unit": "P3",
+  "papers": 18,
+  "from": "January 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_p4",
+  "subject": "Maths",
+  "unit": "P4",
+  "papers": 17,
+  "from": "October 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "maths_s1",
+  "subject": "Maths",
+  "unit": "S1",
+  "papers": 32,
+  "from": "January 2014",
+  "to": "June 2026"
+ },
+ {
+  "key": "physics_u1",
+  "subject": "Physics",
+  "unit": "U1",
+  "papers": 21,
+  "from": "January 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "physics_u2",
+  "subject": "Physics",
+  "unit": "U2",
+  "papers": 20,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "physics_u3",
+  "subject": "Physics",
+  "unit": "U3",
+  "papers": 20,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "physics_u4",
+  "subject": "Physics",
+  "unit": "U4",
+  "papers": 17,
+  "from": "January 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "chemistry_u1",
+  "subject": "Chemistry",
+  "unit": "U1",
+  "papers": 21,
+  "from": "January 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "chemistry_u2",
+  "subject": "Chemistry",
+  "unit": "U2",
+  "papers": 20,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "chemistry_u3",
+  "subject": "Chemistry",
+  "unit": "U3",
+  "papers": 20,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "chemistry_u4",
+  "subject": "Chemistry",
+  "unit": "U4",
+  "papers": 18,
+  "from": "January 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "biology_u1",
+  "subject": "Biology",
+  "unit": "U1",
+  "papers": 20,
+  "from": "January 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "biology_u2",
+  "subject": "Biology",
+  "unit": "U2",
+  "papers": 19,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "biology_u3",
+  "subject": "Biology",
+  "unit": "U3",
+  "papers": 19,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "biology_u4",
+  "subject": "Biology",
+  "unit": "U4",
+  "papers": 17,
+  "from": "October 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "economics_u1",
+  "subject": "Economics",
+  "unit": "U1",
+  "papers": 21,
+  "from": "January 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "economics_u2",
+  "subject": "Economics",
+  "unit": "U2",
+  "papers": 20,
+  "from": "June 2019",
+  "to": "June 2026"
+ },
+ {
+  "key": "economics_u3",
+  "subject": "Economics",
+  "unit": "U3",
+  "papers": 18,
+  "from": "January 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "economics_u4",
+  "subject": "Economics",
+  "unit": "U4",
+  "papers": 17,
+  "from": "October 2020",
+  "to": "June 2026"
+ },
+ {
+  "key": "business_u1",
+  "subject": "Business",
+  "unit": "U1",
+  "papers": 2,
+  "from": "January 2026",
+  "to": "June 2026"
+ },
+ {
+  "key": "business_u2",
+  "subject": "Business",
+  "unit": "U2",
+  "papers": 2,
+  "from": "January 2026",
+  "to": "June 2026"
+ },
+ {
+  "key": "business_u3",
+  "subject": "Business",
+  "unit": "U3",
+  "papers": 2,
+  "from": "January 2026",
+  "to": "June 2026"
+ },
+ {
+  "key": "business_u4",
+  "subject": "Business",
+  "unit": "U4",
+  "papers": 2,
+  "from": "January 2026",
+  "to": "June 2026"
+ },
+ {
+  "key": "psychology_u1",
+  "subject": "Psychology",
+  "unit": "U1",
+  "papers": 23,
+  "from": "June 2016",
+  "to": "June 2026"
+ },
+ {
+  "key": "psychology_u2",
+  "subject": "Psychology",
+  "unit": "U2",
+  "papers": 23,
+  "from": "June 2016",
+  "to": "June 2026"
+ },
+ {
+  "key": "psychology_u3",
+  "subject": "Psychology",
+  "unit": "U3",
+  "papers": 22,
+  "from": "January 2017",
+  "to": "June 2026"
+ }
+]

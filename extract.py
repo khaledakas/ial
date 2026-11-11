@@ -1,0 +1,275 @@
+"""Split each QP into question parts and match each part to its mark-scheme region.
+
+Output: data/questions.json, a list of items with page-region crops (in PDF points)
+that the website renders client-side with PDF.js. No text is re-typed.
+"""
+import json, re, string
+import pymupdf
+
+TOP = 40  # skip running header; BOTTOM/X0/X1 are set per document (A4 vs Letter)
+BOTTOM, MARGIN, RIGHT = 792, 28, 28
+DIMS = {}  # page -> (width, height) in displayed orientation
+
+Q_RE = re.compile(r"^(\d{1,2})\.?(?:\s+|\s*(?=\()|(?<=\.)$)(.*)$")
+PART_RE = re.compile(r"^\(([a-z])\)")
+END_RE = re.compile(r"^\(Total for Question|^\(Total \d+ marks?\)|^TOTAL FOR (SECTION|PAPER)|^BLANK PAGE|^Use this space for any rough")
+DOTS = re.compile(r"^(\d\s*)?[._\u2026 ]{8,}$")
+# lines that carry no question content (answer-space pages in Maths papers)
+FILLER = re.compile(r"^Question \d+ continued|^\(Total for Question|^\(Total \d+ marks?\)|^DO NOT WRITE|^\(?\d+\)?$|^Leave\b|^blank$|^Q\d+$|^Turn over")
+MS_PREFIX_RE = re.compile(r"^(\d{1,2})\.?\s*\(([a-h])\)(?:\s*\([ivx]+\))*\s+\S")
+MS_LABEL_RE = re.compile(r"^(\d{1,2})\.?\s*(?:\(?([a-h])\)?)?(?:\s*\(?([ivx]+)\)?)*\s*(?:[Aa]lt\w*\.?\s*\d*)?$")
+
+
+def lines(doc):
+    """All text lines as (page, x, y0, y1, size, text), in reading order."""
+    out = []
+    for pn, page in enumerate(doc):
+        rot = page.rotation_matrix  # landscape mark-scheme pages: use displayed coords
+        for b in page.get_text("dict")["blocks"]:
+            for l in b.get("lines", []):
+                t = "".join(s["text"] for s in l["spans"]).replace("\t", " ").strip()
+                if not t or t == "PMT":
+                    continue
+                x, y0, _, y1 = pymupdf.Rect(l["bbox"]) * rot if page.rotation else l["bbox"]
+                out.append((pn, x, y0, y1, max(s["size"] for s in l["spans"]), t))
+    out.sort(key=lambda r: (r[0], round(r[2]), r[1]))
+    return out
+
+
+def bottom(p):
+    return DIMS[p][1] - 48
+
+
+def content_bottom(lns, pn, after, before):
+    ys = [y1 for p, x, y0, y1, s, t in lns if p == pn and after <= y0 < before and y1 < bottom(pn)]
+    return min(max(ys, default=after) + 6, before)
+
+
+def span(lns, start, end):
+    """Crops from (page, y) start to (page, y) end, split across pages."""
+    (p0, y0), (p1, y1) = start, end
+    crops = []
+    for p in range(p0, p1 + 1):
+        top = y0 if p == p0 else TOP
+        bot = y1 if p == p1 else bottom(p)
+        if p != p1:
+            bot = content_bottom(lns, p, top, bot)
+        page_lines = [t for pp, x, a, b, s, t in lns if pp == p and top <= a < bot]
+        if any("BLANK PAGE" in t for t in page_lines) or not page_lines:
+            continue
+        # drop trailing dotted answer lines - the user types their answer instead
+        inside = [(a, t) for pp, x, a, b, s, t in lns if pp == p and top <= a < bot]
+        while inside and DOTS.match(inside[-1][1]):
+            bot = inside.pop()[0] - 2
+        if all(DOTS.match(t) or FILLER.match(t) for a, t in inside):
+            continue
+        if bot - top > 12:
+            crops.append([p, MARGIN, round(top, 1), round(DIMS[p][0] - RIGHT, 1), round(min(bot, bottom(p)), 1)])
+    return crops
+
+
+def set_frame(doc, qx, right=None):
+    """Page geometry differs between papers; derive crop bounds from page size and question column."""
+    global BOTTOM, MARGIN, RIGHT
+    DIMS.clear()
+    DIMS.update({p: (pg.rect.width, pg.rect.height) for p, pg in enumerate(doc)})
+    BOTTOM = DIMS[0][1] - 48
+    MARGIN = max(qx - 14, 0)
+    RIGHT = MARGIN if right is None else right
+
+
+def parse_qp(path, split_parts=True):
+    doc = pymupdf.open(path)
+    lns = lines(doc)
+    # question numbers sit in a fixed left column: take the most common x of "N  Text" lines
+    cands = [round(x) for p, x, y0, y1, s, t in lns if s >= 10.5 and x > 25 and re.match(r"^\d{1,2}(\.(\s|$)|\s+[A-Z(\[])", t)]
+    qx = max(set(cands), key=cands.count) if cands else 43
+    set_frame(doc, qx)
+    starts = []  # (qnum, letter|None, page, y)
+    ends = []    # (page, y) hard stops
+    expect = 1
+    cur_q, cur_letter = None, None
+    for p, x, y0, y1, size, t in lns:
+        if y0 < TOP or y0 > BOTTOM:
+            continue
+        if END_RE.match(t):
+            ends.append((p, y1 + 4 if t.startswith("(Total") else y0 - 2))
+            continue
+        m = Q_RE.match(t)
+        if (m and cur_q and int(m.group(1)) == cur_q and abs(x - qx) < 6 and size >= 10.5
+                and PART_RE.match(m.group(2)) and split_parts):
+            # the question is printed again (an overview page listing its parts came first): restart it
+            starts = [st for st in starts if st[0] != cur_q]
+            expect = cur_q
+        if m and abs(x - qx) < 6 and size >= 10.5 and int(m.group(1)) == expect and not m.group(2).startswith("."):
+            cur_q, cur_letter = expect, None
+            expect += 1
+            rest = m.group(2)
+            pm = PART_RE.match(rest) if split_parts else None
+            if pm and pm.group(1) == "a":
+                cur_letter = "a"
+                starts.append((cur_q, None, p, y0 - 4))  # empty stem
+                starts.append((cur_q, "a", p, y0 - 4))
+            else:
+                starts.append((cur_q, None, p, y0 - 4))
+            continue
+        pm = PART_RE.match(t) if split_parts else None
+        if pm and cur_q and qx + 8 < x < qx + 42 and pm.group(1) == "a" and cur_letter not in (None, "a"):
+            # parts start over at (a): what came before was an overview page, so restart the question
+            starts = [st for st in starts if st[0] != cur_q]
+            cur_letter = None
+        if pm and cur_q and qx + 8 < x < qx + 42:
+            want = "a" if cur_letter is None else string.ascii_lowercase[string.ascii_lowercase.index(cur_letter) + 1]
+            if pm.group(1) == want:
+                cur_letter = want
+                starts.append((cur_q, want, p, y0 - 4))
+    last = (len(doc) - 1, bottom(len(doc) - 1))
+
+    def stop(after, nxt):
+        """Earliest hard stop between `after` and `nxt`."""
+        for e in ends:
+            if after < e <= nxt:
+                return e
+        return nxt
+
+    segs = {}
+    for i, (q, letter, p, y) in enumerate(starts):
+        nxt = (starts[i + 1][2], starts[i + 1][3]) if i + 1 < len(starts) else last
+        end = stop((p, y), nxt)
+        segs[(q, letter)] = span(lns, (p, y), end)
+    return segs
+
+
+def parse_ms(path):
+    doc = pymupdf.open(path)
+    lns = lines(doc)
+    # a bare "Q" only counts as the column header when it shares a row with "Scheme"/"Marks"
+    # (mechanics questions also name points and particles Q)
+    rows = {(p, round(y0 / 4)) for p, x, y0, y1, s, t in lns if re.match(r"^(Mark )?Schemes?$|^Marks?\b|^Answer|^Solution|^Working", t)}
+    def is_hdr(t, p=None, y0=None):
+        if t.replace(" ", "").lower() in ("question", "questio", "questionnumber", "questionno", "qno", "qn"):
+            return True
+        return t in ("Q", "Qu", "Q.") and p is not None and any((p, round(y0 / 4) + d) in rows for d in (-1, 0, 1))
+    hx = [x for p, x, y0, y1, s, t in lns if is_hdr(t, p, y0)]
+    set_frame(doc, min(hx, default=43), right=12)  # mark schemes have a 'Mark' column near the edge
+    labels = []  # (q, letter, page, y)
+    for i, (p, x, y0, y1, size, t) in enumerate(lns):
+        if y0 < 30:
+            continue
+        compact = t.replace(" ", "")
+        # S1-style schemes run the label into the answer text: "1.(a) B and C ..."
+        m = MS_LABEL_RE.match(t) or MS_LABEL_RE.match(compact) or MS_PREFIX_RE.match(t)
+        if not m:
+            continue
+        # must sit in the 'Question Number' column; include the header row when it is directly above
+        if hx and not any(abs(hx_ - x) < 40 for hx_ in hx):
+            continue
+        hdr = [r for r in lns if r[0] == p and is_hdr(r[5], r[0], r[2]) and 0 < y0 - r[2] < 100 and abs(r[1] - x) < 40]
+        strong = bool(m.group(2)) or not t.strip().isdigit()  # e.g. "3(a)", "2.", "1 alt"
+        labels.append((int(m.group(1)), m.group(2), p, (min(r[2] for r in hdr) if hdr else y0) - 6, x, y0, strong, bool(hdr)))
+    labels.sort(key=lambda r: (r[2], r[3]))
+    # stray numbers from worked solutions: keep labels in the main label column, in question order
+    # label column = the 'Question' header's x on that page (carried forward to pages without one)
+    cols, col = {}, None
+    for p in range(len(doc)):
+        hdrs = [x for pp, x, y0, y1, s_, t in lns if pp == p and is_hdr(t, pp, y0)]
+        col = min(hdrs) if hdrs else col
+        cols[p] = col
+    # no usable header anywhere: fall back to the column the real labels ("2a", "3(b)") sit in
+    xs = [round(l[4]) for l in labels if l[6]]
+    fallback = max(set(xs), key=xs.count) if xs else None
+    labels = [l for l in labels if (cols[l[2]] if cols[l[2]] is not None else fallback) is not None
+              and abs(l[4] - (cols[l[2]] if cols[l[2]] is not None else fallback)) < 40]
+    # a bare number is only a label if a header sits right above it or it lines up with real labels
+    anchors = [(l[2], l[3], l[4]) for l in labels if l[6] or l[7]]
+
+    def anchored(l):
+        same_page = [ax for ap, ay, ax in anchors if ap == l[2] and ay < l[3]]
+        if same_page:  # strict when the page has trustworthy labels to line up with
+            return any(abs(l[4] - ax) < 1.5 for ax in same_page)
+        return any(abs(l[4] - ax) < 8 for ap, ay, ax in anchors)
+    labels = [l for l in labels if l[6] or l[7] or anchored(l)]
+    kept, last = [], 0
+    for l in labels:
+        # a clear part label ("11(a)") may resume the sequence after a few unreadable labels
+        if l[0] in (last, last + 1) or (not kept and l[0] <= 3) or (l[1] and last < l[0] <= last + 6):
+            kept.append(list(l[:4]) + [l[5]])
+            last = l[0]
+    # a label only gets the table header if no earlier label sits between them (shared tables)
+    for i in range(1, len(kept)):
+        prev, cur = kept[i - 1], kept[i]
+        if prev[2] == cur[2] and prev[3] >= cur[3] - 2:
+            cur[3] = cur[4] - 6
+    labels = [tuple(l[:4]) for l in kept]
+    last = (len(doc) - 1, bottom(len(doc) - 1))
+    segs = {}
+    for i, (q, letter, p, y) in enumerate(labels):
+        nxt = (labels[i + 1][2], labels[i + 1][3]) if i + 1 < len(labels) else last
+        segs.setdefault((q, letter), []).extend(span(lns, (p, y), nxt))
+    return segs
+
+
+def insert_pages(path):
+    """Source-booklet pages (Economics extracts) that PMT appends after the end of the paper."""
+    doc = pymupdf.open(path)
+    end, crops = None, []
+    for i, page in enumerate(doc):
+        t = page.get_text()
+        if "TOTAL FOR PAPER" in t:
+            end = i
+        elif end is not None and re.search(r"\bExtract [A-H]\b|\bFigure \d", t):
+            w, h = page.rect.width, page.rect.height
+            crops.append([i, 20, 36, round(w - 20, 1), round(h - 40, 1)])
+    return crops
+
+
+def crop_text(path, crops):
+    doc = pymupdf.open(path)
+    return " ".join(doc[p].get_text("text", clip=pymupdf.Rect(x0, y0, x1, y1)) for p, x0, y0, x1, y1 in crops)
+
+
+def main():
+    manifest = json.load(open("pdfs/manifest.json"))
+    items, stats = [], []
+    for paper in manifest:
+        try:
+            # Maths parts lean on set-up text printed between them, so keep whole questions
+            qp, ms = parse_qp(paper["qp"], split_parts=paper["subject"] != "Maths"), parse_ms(paper["ms"])
+            inserts = insert_pages(paper["qp"]) if paper["subject"] == "Economics" else []
+        except Exception as e:  # noqa: BLE001
+            print("ERR", paper["qp"], e)
+            continue
+        matched = 0
+        for (q, letter), crops in qp.items():
+            if letter is None and (q, "a") in qp:
+                continue  # stems are shown with each part, not on their own
+            ms_crops = ms.get((q, letter)) or (ms.get((q, None)) if letter is None else None)
+            if not ms_crops and letter is None:  # MCQ/whole question marked by sub-labels
+                ms_crops = sorted({tuple(c) for (mq, ml), cs in ms.items() if mq == q for c in cs}, key=lambda c: (c[0], c[2]))
+                ms_crops = [list(c) for c in ms_crops]
+            if not crops or not ms_crops:
+                continue
+            stem = qp.get((q, None), []) if letter else []
+            # questions that point at the source booklet get its pages as extra context
+            ctx = inserts if inserts and re.search(r"\bExtract\b|\bFigure\b", crop_text(paper["qp"], stem + crops)) else []
+            items.append({
+                "id": f"{paper['subject'][:3]}-{paper['unit']}-{paper['session'].replace(' ', '')}-{q}{letter or ''}",
+                "subject": paper["subject"], "unit": paper["unit"], "session": paper["session"],
+                "label": f"Q{q}" + (f"({letter})" if letter else ""),
+                "qp": paper["qp_url"], "ms": paper["ms_url"],
+                "qp_file": paper["qp"], "ms_file": paper["ms"],
+                "stem": stem, "q": crops, "a": ms_crops, **({"ctx": ctx} if ctx else {}),
+            })
+            matched += 1
+        parts = sum(1 for (q, l) in qp if not (l is None and (q, "a") in qp))
+        stats.append((paper["qp"], parts, matched))
+        if parts == 0 or matched / parts < 0.7:
+            print(f"LOW  {paper['qp']}: {matched}/{parts}")
+    json.dump(items, open("data/questions.json", "w"), separators=(",", ":"))
+    print(len(items), "questions from", len(stats), "papers")
+
+
+if __name__ == "__main__":
+    import os
+    os.makedirs("data", exist_ok=True)
+    main()

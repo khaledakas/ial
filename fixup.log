@@ -1,0 +1,222 @@
+163 school papers; skipped: ["{'QP': 'src/IAL_Maths_2026_Papers/IAL Maths 2026/Jan 2026/Maths Jan 2026 S2A QP.pdf'}"]
+LOW  pdfs/Biology/U4/June_2026_qp.pdf: 0/0
+LOW  pdfs/Biology/U5/June_2026_A_qp.pdf: 3/8
+LOW  pdfs/Maths/D1/January_2026_A_qp.pdf: 0/0
+LOW  pdfs/Maths/P3/January_2026_A_qp.pdf: 3/5
+LOW  pdfs/Maths/P4/January_2026_qp.pdf: 5/9
+LOW  pdfs/Psychology/U4/June_2026_qp.pdf: 13/21
+2319 questions from 163 papers
+Biology | U1 | Biological molecules | 13
+Biology | U1 | Blood & clotting | 5
+Biology | U1 | CVD & risk factors | 14
+Biology | U1 | DNA & protein synthesis | 10
+Biology | U1 | Enzymes | 5
+Biology | U1 | Heart & circulation | 4
+Biology | U1 | Inheritance & genetic disorders | 8
+Biology | U1 | Membranes & transport | 12
+Biology | U1 | Other | 3
+Biology | U2 | Biodiversity & classification | 10
+Biology | U2 | Cell division (mitosis & meiosis) | 7
+Biology | U2 | Cell structure & microscopy | 9
+Biology | U2 | Conservation | 7
+Biology | U2 | Drugs from plants & testing | 4
+Biology | U2 | Other | 2
+Biology | U2 | Plant structure & products | 15
+Biology | U2 | Reproduction & fertilisation | 14
+Biology | U2 | Stem cells & gene expression | 8
+Biology | U3 | Biological molecules | 13
+Biology | U3 | Cell division (mitosis & meiosis) | 1
+Biology | U3 | Drugs from plants & testing | 8
+Biology | U3 | Enzymes | 6
+Biology | U3 | Membranes & transport | 1
+Biology | U3 | Other | 1
+Biology | U4 | Antibiotics & resistance | 2
+Biology | U4 | Climate change | 16
+Biology | U4 | Ecosystems & succession | 4
+Biology | U4 | Energy transfer & productivity | 6
+Biology | U4 | Evolution & speciation | 3
+Biology | U4 | Forensics & DNA profiling | 10
+Biology | U4 | Immunity & vaccination | 6
+Biology | U4 | Infection & pathogens | 7
+Biology | U4 | Other | 5
+Biology | U4 | Photosynthesis | 7
+Biology | U5 | Other | 58
+Biology | U6 | Other | 46
+Business | U1 | Marketing | 11
+Business | U1 | Other | 8
+Business | U1 | People & entrepreneurs | 14
+Business | U2 | Finance | 18
+Business | U2 | Marketing | 7
+Business | U2 | Operations | 7
+Business | U2 | Other | 6
+Business | U3 | Finance | 4
+Business | U3 | Other | 1
+Business | U3 | People & entrepreneurs | 8
+Business | U3 | Strategy & decisions | 9
+Business | U4 | Global business | 13
+Business | U4 | Marketing | 3
+Business | U4 | Other | 3
+Business | U4 | Strategy & decisions | 7
+Chemistry | U1 | Alkanes, alkenes & polymers | 35
+Chemistry | U1 | Atomic structure & periodic table | 40
+Chemistry | U1 | Bonding & structure | 21
+Chemistry | U1 | Moles & equations | 36
+Chemistry | U1 | Other | 6
+Chemistry | U2 | Alcohols & halogenoalkanes | 16
+Chemistry | U2 | Energetics | 19
+Chemistry | U2 | Groups 1, 2 & 7 | 21
+Chemistry | U2 | Intermolecular forces | 13
+Chemistry | U2 | Kinetics & equilibrium | 15
+Chemistry | U2 | Mass spec & IR | 6
+Chemistry | U2 | Moles & equations | 25
+Chemistry | U2 | Other | 3
+Chemistry | U2 | Redox | 13
+Chemistry | U3 | Alcohols & halogenoalkanes | 8
+Chemistry | U3 | Alkanes, alkenes & polymers | 10
+Chemistry | U3 | Atomic structure & periodic table | 2
+Chemistry | U3 | Bonding & structure | 1
+Chemistry | U3 | Energetics | 2
+Chemistry | U3 | Groups 1, 2 & 7 | 11
+Chemistry | U3 | Intermolecular forces | 2
+Chemistry | U3 | Kinetics & equilibrium | 2
+Chemistry | U3 | Mass spec & IR | 1
+Chemistry | U3 | Moles & equations | 16
+Chemistry | U3 | Other | 1
+Chemistry | U3 | Redox | 3
+Chemistry | U4 | Acids, bases & buffers | 21
+Chemistry | U4 | Carbonyls, acids & derivatives | 27
+Chemistry | U4 | Entropy & energetics II | 16
+Chemistry | U4 | Equilibria (Kc, Kp) | 13
+Chemistry | U4 | Optical isomerism | 4
+Chemistry | U4 | Other | 8
+Chemistry | U4 | Rates (kinetics II) | 19
+Chemistry | U4 | Spectroscopy & chromatography | 11
+Chemistry | U5 | Other | 113
+Chemistry | U6 | Other | 57
+Economics | U1 | Consumer & producer surplus | 12
+Economics | U1 | Demand, supply & price | 22
+Economics | U1 | Economic problem & specialisation | 12
+Economics | U1 | Elasticities | 15
+Economics | U1 | Government intervention | 8
+Economics | U1 | Market failure & externalities | 5
+Economics | U1 | Other | 8
+Economics | U2 | Aggregate demand & supply | 31
+Economics | U2 | Growth, inflation & unemployment | 7
+Economics | U2 | Macroeconomic policy | 13
+Economics | U2 | Measuring the economy | 32
+Economics | U2 | Other | 1
+Economics | U3 | Competition policy & regulation | 4
+Economics | U3 | Costs, revenue & profit | 15
+Economics | U3 | Firm objectives, size & growth | 9
+Economics | U3 | Labour market | 8
+Economics | U3 | Market structures | 16
+Economics | U3 | Other | 5
+Economics | U4 | Balance of payments & exchange rates | 11
+Economics | U4 | Financial sector & role of the state | 2
+Economics | U4 | Globalisation & trade | 12
+Economics | U4 | Growth & development | 10
+Economics | U4 | Other | 7
+Economics | U4 | Poverty & inequality | 9
+Economics | U4 | Public finance & macro policy | 8
+Maths | D1 | Other | 23
+Maths | FP1 | Other | 38
+Maths | FP2 | Other | 33
+Maths | FP3 | Other | 32
+Maths | M1 | Forces & equilibrium | 7
+Maths | M1 | Kinematics | 6
+Maths | M1 | Moments | 4
+Maths | M1 | Momentum & impulse | 4
+Maths | M1 | Newton's laws & connected particles | 2
+Maths | M1 | Vectors in mechanics | 5
+Maths | M2 | Centres of mass | 5
+Maths | M2 | Collisions (NEL) | 6
+Maths | M2 | Kinematics with calculus | 5
+Maths | M2 | Projectiles | 4
+Maths | M2 | Statics of rigid bodies | 3
+Maths | M2 | Work, energy & power | 7
+Maths | M3 | Other | 29
+Maths | P1 | Algebra & surds | 9
+Maths | P1 | Coordinate geometry | 5
+Maths | P1 | Differentiation | 6
+Maths | P1 | Equations & inequalities | 5
+Maths | P1 | Graphs & transformations | 10
+Maths | P1 | Integration | 3
+Maths | P1 | Trigonometry & radians | 9
+Maths | P2 | Binomial expansion | 5
+Maths | P2 | Coordinate geometry of circles | 5
+Maths | P2 | Differentiation & integration | 11
+Maths | P2 | Exponentials & logarithms | 4
+Maths | P2 | Proof & algebraic division | 7
+Maths | P2 | Sequences & series | 6
+Maths | P2 | Trigonometry | 4
+Maths | P3 | Algebra & functions | 4
+Maths | P3 | Differentiation | 5
+Maths | P3 | Exponentials & logarithms | 14
+Maths | P3 | Integration | 4
+Maths | P3 | Numerical methods | 3
+Maths | P3 | Other | 1
+Maths | P3 | Trigonometry | 10
+Maths | P4 | Differential equations | 4
+Maths | P4 | Implicit differentiation | 3
+Maths | P4 | Integration | 12
+Maths | P4 | Parametric equations | 5
+Maths | P4 | Partial fractions & binomial | 5
+Maths | P4 | Proof | 1
+Maths | P4 | Vectors | 9
+Maths | S1 | Correlation & regression | 5
+Maths | S1 | Data representation & summary | 6
+Maths | S1 | Discrete random variables | 7
+Maths | S1 | Normal distribution | 3
+Maths | S1 | Probability | 9
+Maths | S2 | Other | 21
+Maths | S3 | Other | 29
+Physics | U1 | Fluids | 13
+Physics | U1 | Forces & Newton's laws | 23
+Physics | U1 | Materials | 25
+Physics | U1 | Momentum | 8
+Physics | U1 | Motion & kinematics | 26
+Physics | U1 | Other | 2
+Physics | U1 | Work, energy & power | 9
+Physics | U2 | Electric circuits | 40
+Physics | U2 | Particle nature of light | 15
+Physics | U2 | Refraction, diffraction & polarisation | 12
+Physics | U2 | Resistivity & I-V characteristics | 7
+Physics | U2 | Superposition & stationary waves | 12
+Physics | U2 | Waves | 23
+Physics | U3 | Electric circuits | 7
+Physics | U3 | Fluids | 1
+Physics | U3 | Forces & Newton's laws | 1
+Physics | U3 | Materials | 3
+Physics | U3 | Measurement & uncertainties | 20
+Physics | U3 | Momentum | 3
+Physics | U3 | Motion & kinematics | 3
+Physics | U3 | Other | 2
+Physics | U3 | Particle nature of light | 4
+Physics | U3 | Superposition & stationary waves | 1
+Physics | U3 | Waves | 5
+Physics | U3 | Work, energy & power | 2
+Physics | U4 | Capacitors | 12
+Physics | U4 | Circular motion | 13
+Physics | U4 | Electric fields | 20
+Physics | U4 | Magnetic fields & induction | 20
+Physics | U4 | Momentum & collisions | 14
+Physics | U4 | Other | 5
+Physics | U4 | Particle physics | 25
+Physics | U5 | Other | 93
+Physics | U6 | Other | 33
+Psychology | U1 | Memory | 14
+Psychology | U1 | Obedience | 9
+Psychology | U1 | Prejudice | 6
+Psychology | U1 | Research methods & statistics | 11
+Psychology | U2 | Biological psychology | 20
+Psychology | U2 | Learning: conditioning | 12
+Psychology | U2 | Learning: social learning | 2
+Psychology | U2 | Recreational drugs | 1
+Psychology | U2 | Research methods & statistics | 22
+Psychology | U3 | Criminological psychology | 17
+Psychology | U3 | Developmental psychology | 17
+Psychology | U3 | Health psychology | 16
+Psychology | U3 | Other | 3
+Psychology | U3 | Research methods & statistics | 4
+Psychology | U4 | Other | 34
+final 10712
