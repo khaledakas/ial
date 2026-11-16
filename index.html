@@ -200,7 +200,7 @@ async function renderCrops(container, path, crops) {
 // ---- Deck ----------------------------------------------------------------
 const groupKey = q => `${q.subject} ${q.unit}`;
 const topicKey = (subject, t) => `${subject}|${t}`;
-const yearOf = q => (q.session.match(/\\b(20\\d{2})\\b/) || [])[1] || "";
+const yearOf = q => (q.session.match(/\b(20\d{2})\b/) || [])[1] || "";
 const years = () => [...new Set(all.map(yearOf).filter(Boolean))].sort((a, b) => b.localeCompare(a));
 const calcOk = q => !calcOnly.has(q.subject) || q.calc;
 const inPool = q => enabled.has(groupKey(q)) && calcOk(q)
