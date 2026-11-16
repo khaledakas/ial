@@ -94,6 +94,7 @@
   <details class="filters" id="filters">
     <summary>Subjects, units &amp; topics <span id="pool" style="font-weight:400;color:var(--muted)"></span></summary>
     <div class="groups" id="groups"></div>
+    <div class="group" style="margin-top:14px"><h3>Year</h3><div class="topics" id="years-row"></div></div>
     <div class="group" style="margin-top:14px"><h3>Marks</h3><div class="topics" id="marks-row"></div></div>
     <label class="toggle"><input type="checkbox" id="hide-done"> Skip questions I've already done</label>
   </details>
@@ -158,6 +159,7 @@ let enabled = new Set(store.get("units", []));  // units the visitor ticked; not
 let offTopics = new Set(store.get("offTopics", []));  // "Subject|Topic" the user switched off
 let offMarks = new Set(store.get("offMarks", []));    // mark buckets switched off
 let calcOnly = new Set(store.get("calcOnly", []));    // subjects limited to calculation questions
+let selectedYears = new Set(store.get("years", []));  // empty means all years
 const CALC_SUBJECTS = ["Chemistry", "Physics"];
 const MARK_BUCKETS = [["1", 1, 1], ["2", 2, 2], ["3", 3, 3], ["4–5", 4, 5], ["6–8", 6, 8], ["9–12", 9, 12], ["13+", 13, 99]];
 const bucketOf = q => q.marks ? MARK_BUCKETS.find(([, lo, hi]) => q.marks >= lo && q.marks <= hi)[0] : "?";
@@ -198,8 +200,12 @@ async function renderCrops(container, path, crops) {
 // ---- Deck ----------------------------------------------------------------
 const groupKey = q => `${q.subject} ${q.unit}`;
 const topicKey = (subject, t) => `${subject}|${t}`;
+const yearOf = q => (q.session.match(/\\b(20\\d{2})\\b/) || [])[1] || "";
+const years = () => [...new Set(all.map(yearOf).filter(Boolean))].sort((a, b) => b.localeCompare(a));
 const calcOk = q => !calcOnly.has(q.subject) || q.calc;
-const inPool = q => enabled.has(groupKey(q)) && calcOk(q) && !offMarks.has(bucketOf(q))
+const inPool = q => enabled.has(groupKey(q)) && calcOk(q)
+  && (!selectedYears.size || selectedYears.has(yearOf(q)))
+  && !offMarks.has(bucketOf(q))
   && q.topics.some(t => !offTopics.has(topicKey(q.subject, t)));
 
 function shuffle(a) {
@@ -260,7 +266,41 @@ function buildFilters() {
     renderTopics(subject, tl);
     $("groups").appendChild(g);
   }
+  renderYears();
   renderMarks();
+}
+
+function renderYears() {
+  const el = $("years-row");
+  el.innerHTML = "";
+  const available = years();
+  const addChip = (label, active, onClick, count = null) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (active ? " on" : "");
+    b.textContent = count === null ? label : `${label} · ${count.toLocaleString()}`;
+    b.setAttribute("aria-pressed", active);
+    b.onclick = onClick;
+    el.appendChild(b);
+  };
+  addChip("All years", selectedYears.size === 0, () => {
+    selectedYears.clear();
+    saveYears();
+  });
+  for (const year of available) {
+    const count = all.filter(q => yearOf(q) === year).length;
+    addChip(year, selectedYears.has(year), () => {
+      selectedYears.has(year) ? selectedYears.delete(year) : selectedYears.add(year);
+      if (selectedYears.size === available.length) selectedYears.clear();
+      saveYears();
+    }, count);
+  }
+}
+
+function saveYears() {
+  store.set("years", [...selectedYears]);
+  renderYears();
+  rebuildDeck();
+  if (!current || !inPool(current)) next();
 }
 
 function renderTopics(subject, el) {
