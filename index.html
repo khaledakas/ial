@@ -114,7 +114,7 @@
   <section id="result" class="hidden">
     <div class="label">Your answer</div>
     <div class="yours" id="yours"></div>
-    <div class="label">Mark scheme</div>
+    <div class="label">Mark scheme · <a id="ms-link" target="_blank" rel="noopener">full mark scheme</a></div>
     <div class="sheet" id="ms"></div>
     <div class="label">How did you do?</div>
     <div class="actions">
@@ -429,6 +429,7 @@ async function show(q) {
 async function reveal() {
   if (!current || $("reveal").disabled) return;
   $("reveal").disabled = true;
+  $("ms-link").href = current.ms;
   $("yours").textContent = $("answer").value.trim() || "(no answer typed)";
   $("result").classList.remove("hidden");
   await renderCrops($("ms"), current.ms, current.a);
