@@ -72,6 +72,9 @@
                overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .hist .go { display: flex; gap: 8px; align-items: center; }
   .hist button { padding: 5px 12px; font-size: 13px; }
+  .hist-selects { display:flex; flex-wrap:wrap; gap:12px; margin:0 0 12px; }
+  .hist-selects label { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:13px; }
+  .hist-selects select { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font:inherit; }
   .empty { color: var(--muted); text-align: center; padding: 32px 0; }
   details.ctx { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
   details.ctx summary { cursor: pointer; font-weight: 600; font-size: 14px; }
@@ -127,6 +130,10 @@
  </div>
 
  <section id="history" class="hidden">
+  <div class="hist-selects">
+   <label>Subject <select id="hist-subject"><option value="all">All subjects</option></select></label>
+   <label>Paper / Unit <select id="hist-unit"><option value="all">All papers / units</option></select></label>
+  </div>
   <div class="hist-bar" id="hist-filters"></div>
   <ul class="hist" id="hist-list"></ul>
   <p class="hint">History is saved in this browser only. Clearing site data or switching device starts it fresh.</p>
@@ -459,6 +466,19 @@ function setTab(name) {
 }
 
 function renderHistory() {
+  const subjectSelect = $("hist-subject");
+  const unitSelect = $("hist-unit");
+  const previousSubject = subjectSelect.value || "all";
+  const previousUnit = unitSelect.value || "all";
+  const subjects = [...new Set(history.map(h => byId.get(h.id)).filter(Boolean).map(q => q.subject))].sort();
+  subjectSelect.innerHTML = '<option value="all">All subjects</option>' +
+    subjects.map(s => `<option value="${s}">${s}</option>`).join("");
+  subjectSelect.value = subjects.includes(previousSubject) ? previousSubject : "all";
+  const units = [...new Set(history.map(h => byId.get(h.id)).filter(q => q && (subjectSelect.value === "all" || q.subject === subjectSelect.value)).map(q => q.unit))].sort();
+  unitSelect.innerHTML = '<option value="all">All papers / units</option>' +
+    units.map(u => `<option value="${u}">${u}</option>`).join("");
+  unitSelect.value = units.includes(previousUnit) ? previousUnit : "all";
+
   const counts = [0, 0, 0];
   for (const h of history) counts[h.r]++;
   const opts = [["all", `All · ${history.length}`], ["0", `Missed · ${counts[0]}`], ["1", `Partly · ${counts[1]}`], ["2", `Got it · ${counts[2]}`],
@@ -478,6 +498,11 @@ function renderHistory() {
   bar.appendChild(spacer);
 
   let rows = history.map((h, i) => ({ ...h, i })).reverse();
+  rows = rows.filter(h => {
+    const q = byId.get(h.id);
+    return q && (subjectSelect.value === "all" || q.subject === subjectSelect.value)
+      && (unitSelect.value === "all" || q.unit === unitSelect.value);
+  });
   if (histFilter === "latest-missed") {
     const seen = new Set();
     rows = rows.filter(h => !seen.has(h.id) && seen.add(h.id) && h.r < 2);
@@ -521,6 +546,8 @@ function renderHistory() {
 window.addEventListener("hashchange", () => { if (location.hash === "#history") setTab("history"); });
 $("tab-practice").onclick = () => setTab("practice");
 $("tab-history").onclick = () => setTab("history");
+$("hist-subject").onchange = () => { $("hist-unit").value = "all"; renderHistory(); };
+$("hist-unit").onchange = renderHistory;
 $("hide-done").checked = hideDone;
 $("hide-done").onchange = e => { hideDone = e.target.checked; store.set("hideDone", hideDone); rebuildDeck(); if (current && hideDone && lastAttempt(current.id)) next(); };
 
